@@ -1,0 +1,264 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Your Pantry App</title>
+    <style>
+        /* Add your CSS styles here */
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(315deg, rgba(101,0,94,1) 0%, rgba(26,77,46,1) 20%, rgba(79,111,82,1) 40%, rgba(232,223,202,1) 60%, rgba(92,251,123,1) 80%, rgba(201,248,187,1) 100%);
+            animation: gradient 15s ease infinite;
+            background-size: 400% 400%;
+            background-attachment: fixed;
+            font-family: Arial, Helvetica, sans-serif;
+            color:  #E1D8C9;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 0%;
+            }
+            50% {
+                background-position: 100% 100%;
+            }
+            100% {
+                background-position: 0% 0%;
+            }
+        }
+
+        .container {
+            background-color: rgba(79, 101, 82, 0.8);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        .title {
+            color: #E1D8C9;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .start-button {
+            background-color: #1A4D2E;
+            color: #E1D8C9;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .start-button:hover {
+            background-color: #708871;
+        }
+
+        .webcam-container {
+            border: 2px solid #E1D8C9;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .prediction-container {
+            color: #E1D8C9;
+            margin-top: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .wave {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 50%;
+            position: fixed;
+            width: 200%;
+            height: 15em;
+            animation: wave 12s linear infinite;
+            opacity: 0.8;
+            bottom: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .wave:nth-of-type(2) {
+            bottom: -2em;
+            animation: wave 18s linear reverse infinite;
+            opacity: 0.6;
+        }
+
+        .wave:nth-of-type(3) {
+            bottom: -4em;
+            animation: wave 20s linear reverse infinite;
+            opacity: 0.4;
+        }
+
+        @keyframes wave {
+            0% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(-50%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+       
+    </style>
+</head>
+<body>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+
+    <div class="container">
+        <div class="title">AI Image Recognition for Your Pantry Essentials</div>
+        <button type="button" class="start-button" id="start-button">Start</button>
+        <div id="webcam-container" class="webcam-container"></div>
+        <div id="highest-prediction" class="prediction-container"></div>
+        <input 
+    type="number" 
+    id="quantity" 
+    placeholder="Enter quantity" 
+    min="1"
+    style="background-color: #E1D8C9; border-radius: 9px; padding: 8px; border: 1px solid #ccc; width: 100px;"
+>
+
+        <button type="button" class="start-button" id="submit-quantity" onclick="submitQuantity">Submit Quantity</button>
+            <p style="margin-bottom: 10;"><span>Our model can currently recognize only 30 types of fruits and vegetables. If the item you are looking for is not recognized, please go back to the main page and add it manually.</span></p>
+  </div>
+    
+
+    <!-- Firebase and Teachable Machine Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js';
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js';
+    
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCqVGPUF6GGNHbuA3_uIY59x_LWS46-Rio",
+            authDomain: "pantry-app-867bc.firebaseapp.com",
+            projectId: "pantry-app-867bc",
+            storageBucket: "pantry-app-867bc.appspot.com",
+            messagingSenderId: "1086558794191",
+            appId: "1:1086558794191:web:498c4ff27d00e3407262ba"
+          };
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const firestore = getFirestore(app);
+    
+        const URL = "https://teachablemachine.withgoogle.com/models/28b_8U4Ix/";
+    
+        let model, webcam, highestPredictionElement, maxPredictions;
+    
+        document.getElementById('start-button').addEventListener('click', init);
+        document.getElementById('submit-quantity').addEventListener('click', submitQuantity);
+    
+        async function init() {
+            try {
+                const modelURL = URL + "model.json";
+                const metadataURL = URL + "metadata.json";
+    
+                model = await tmImage.load(modelURL, metadataURL);
+                maxPredictions = model.getTotalClasses();
+    
+                const flip = true;
+                webcam = new tmImage.Webcam(200, 200, flip);
+                await webcam.setup();
+                await webcam.play();
+                window.requestAnimationFrame(loop);
+    
+                document.getElementById("webcam-container").appendChild(webcam.canvas);
+                highestPredictionElement = document.getElementById('highest-prediction');
+            } catch (error) {
+                console.error("Error initializing the model or webcam:", error);
+            }
+        }
+    
+        async function loop() {
+            webcam.update();
+            await predict();
+            window.requestAnimationFrame(loop);
+        }
+    
+        async function predict() {
+            try {
+                const predictions = await model.predict(webcam.canvas);
+    
+                let highestProbability = 0;
+                let highestClassName = '';
+    
+                for (let i = 0; i < maxPredictions; i++) {
+                    if (predictions[i].probability > highestProbability) {
+                        highestProbability = predictions[i].probability;
+                        highestClassName = predictions[i].className;
+                    }
+                }
+    
+                highestPredictionElement.innerHTML = 'Highest Prediction: ' + highestClassName;
+            } catch (error) {
+                console.error("Error during prediction:", error);
+            }
+        }
+    
+        async function submitQuantity() {
+            const quantity = document.getElementById('quantity').value;
+            const itemName = document.getElementById('highest-prediction').innerText.replace('Highest Prediction: ', '').trim();
+        
+            if (!quantity || isNaN(quantity) || quantity <= 0) {
+                alert("Please enter a valid quantity.");
+                return;
+            }
+        
+            if (!itemName) {
+                alert('Predicted item name is missing.');
+                return;
+            }
+        
+            try {
+                const docRef = doc(firestore, 'pantry', itemName);
+                const docSnap = await getDoc(docRef);
+        
+                if (docSnap.exists()) {
+                    await updateDoc(docRef, { quantity: increment(Number(quantity)) });
+                } else {
+                    await setDoc(docRef, { name: itemName, quantity: Number(quantity) });
+                }
+        
+                console.log(`Added/Updated item: ${itemName} with quantity: ${quantity}`);
+                alert(`Item "${itemName}" has been added/updated with quantity ${quantity}.`);
+                document.getElementById('quantity').value = ''; // Reset the quantity input
+            } catch (error) {
+                console.error('Error adding item to Firestore:', error);
+                alert('An error occurred while adding the item. Please try again.');
+            }
+        }
+        
+     </script>
+    
+</body>
+</html>
