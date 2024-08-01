@@ -7,6 +7,8 @@ import { firestore } from '../firebase';
 import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
 import { keyframes } from '@mui/system';
+import { Margin } from '@mui/icons-material';
+
 
 const modalStyle = {
   position: 'absolute',
@@ -22,7 +24,9 @@ const modalStyle = {
   flexDirection: 'column',
   alignItems: 'center',
   gap: 2,
+  backgroundColor:'#E8DFCA',
 };
+
 
 const sectionStyle = {
   width: '100vw',
@@ -40,8 +44,9 @@ const greenStyle = {
 
 const oliveGreenStyle = {
   ...sectionStyle,
-  backgroundColor: '#4F6F52',
+  backgroundImage: 'url(./3-background.png)'
 };
+
 
 
 export default function Home() {
@@ -166,28 +171,71 @@ export default function Home() {
   return (
     <>
       <Box
-    sx={{
+  sx={{
     ...greenStyle,  // Include any other styles from greenStyle
-    backgroundImage: 'url(./background.jpg)', // Path to your background image
+    backgroundImage: 'url(./2-background.png)', // Path to your background image
     backgroundSize: 'cover', // Ensure the image covers the entire area
     backgroundPosition: 'center', // Center the background image
-    backgroundRepeat: 'no-repeat' // Prevent the image from repeating
+    backgroundRepeat: 'no-repeat', // Prevent the image from repeating
+    position: 'relative', // Ensure that the nested Box is positioned relative to this
+    height: '100vh', // Full viewport height to cover the entire background
   }}
 >
-  <Typography variant="h3" color="#E1D8C9">
-    Welcome to Your Magical Pantry
-  </Typography>
+  <Box
+    sx={{
+      textAlign: 'center',
+      padding: 2,
+      position: 'absolute', // Position absolutely to cover the area
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      backgroundColor: 'rgba(0, 0, 0, 0.3)', // semi-transparent background color
+      backdropFilter: 'blur(10px)', // Adjust the blur strength
+      borderRadius: '8px', // Optional: Add rounded corners for a smoother look
+      maxWidth: '900px', // Max width for the content
+      width: '100%', // Ensure the Box takes full width available
+    }}
+  >
+    <Typography variant="h3" color="#E1D8C9" gutterBottom>
+      Welcome to Your Magical Pantry
+    </Typography>
+    <Typography variant="h6" color="#E1D8C9" paragraph>
+      Dive into the magic of efficient pantry management and elevate your kitchen experience. Our app is designed to help you keep track of pantry items with ease and precision.
+    </Typography>
+  </Box>
 </Box>
 
 
+
       <Box sx={oliveGreenStyle}>
-        <Button variant="contained" onClick={handleOpen} sx={{marginBottom: 2,backgroundColor: '#708871'}}>
+        <Button variant="contained" onClick={handleOpen} sx={{
+    marginTop: 5,
+    marginBottom: 2,
+    backgroundColor: '#708871',
+    '&:hover': {
+      backgroundColor: '#5a6d58', // Change to your preferred color on hover
+    },
+    '&:focus': {
+      outline: 'none', // Remove focus outline if needed
+    },
+  }}>
           ADD ITEM
         </Button>
         <Link href="/app.html">
-          <Button variant="contained" sx={{marginBottom: 2,backgroundColor: '#708871'}} color="secondary">Capture Image</Button>
+          <Button variant="contained" sx={{
+    marginTop: 1,
+    marginBottom: 2,
+    backgroundColor: '#708871',
+    '&:hover': {
+      backgroundColor: '#5a6d58', // Change to your preferred color on hover
+    },
+    '&:focus': {
+      outline: 'none', // Remove focus outline if needed
+    },
+  }} color="secondary">Capture Image</Button>
         </Link>
 
+        
         <Modal
           open={open}
           onClose={handleClose}
@@ -222,17 +270,35 @@ export default function Home() {
               onChange={(e) => setItemQuantity(parseInt(e.target.value))}
               fullWidth
             />
-            <Button variant="contained" onClick={handleAddItem}>
+            {/* <Button sx={{backgroundColor: '#708871'}}variant="contained" onClick={handleAddItem}>
               ADD
-            </Button>
+            </Button> */}
+            <Button
+  variant="contained"
+  onClick={handleAddItem}
+  sx={{
+    marginTop: 5,
+    marginBottom: 2,
+    backgroundColor: '#708871',
+    '&:hover': {
+      backgroundColor: '#5a6d58', // Change to your preferred color on hover
+    },
+    '&:focus': {
+      outline: 'none', // Remove focus outline if needed
+    },
+  }}
+>
+  ADD
+</Button>
+
           </Box>
         </Modal>
 
-        <Box width="800px" height="400px" bgcolor="#E8DFCA" sx={{ padding: 2, borderRadius: 2 }}>
+        <Box width="500px" height="200px" bgcolor="#E8DFCA" sx={{ padding: 2, borderRadius: 2 }}>
           <Typography variant="h2" color="#333" textAlign="center">
             Pantry Items
           </Typography>
-          <Stack direction="row" spacing={2} marginTop={2}>
+          <Stack direction="row" spacing={1} marginTop={2}>
             <TextField
               id="search-item"
               label="Search Item"
@@ -241,35 +307,67 @@ export default function Home() {
               onChange={(e) => setSearchQuery(e.target.value)}
               fullWidth
             />
-            <Button variant="contained" onClick={handleSearch} sx={{backgroundColor: '#708871'}}>
+            <Button variant="contained" onClick={handleSearch} sx={{
+    
+    backgroundColor: '#708871',
+    '&:hover': {
+      backgroundColor: '#5a6d58', // Change to your preferred color on hover
+    },
+    '&:focus': {
+      outline: 'none', // Remove focus outline if needed
+    },
+  }}>
               SEARCH
             </Button>
           </Stack>
         </Box>
 
-        <Stack width="800px" spacing={0.5} marginTop={2} overflow="auto">
-          {pantryList.map((item) => (
-            <Box
-              key={item.name}
-              width="100%"
-              height="auto"
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              bgcolor="#E8DFCA"
-              padding={1}
-              borderRadius={1}
-            >
-              <Typography>{item.name}</Typography>
-              <Box display="flex" alignItems="center">
-                <Typography>Quantity: {item.quantity}</Typography>
-              </Box>
-              <Button onClick={() => handleRemoveItem(item.name)} sx={{backgroundColor: '#708871', color:"whitesmoke"}}>
-                Remove
-              </Button>
-            </Box>
-          ))}
-        </Stack>
+        <Stack
+  width="550px"
+  spacing={0.5}
+  marginTop={2}
+  overflow="auto"
+  marginBottom={3}
+  borderRadius={2}
+  sx={{ overflowX: 'hidden' }}
+  style={{
+    scrollbarWidth: 'none', /* For Firefox */
+    msOverflowStyle: 'none', /* For Internet Explorer and Edge */
+    '&::-webkit-scrollbar': {
+      display: 'none' /* For Chrome, Safari, and Opera */
+    }
+  }}
+>
+  {pantryList.map((item) => (
+    <Box
+      key={item.name}
+      width="100%"
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      bgcolor="#E8DFCA"
+      padding={1}
+      borderRadius={1}
+      boxSizing="border-box" // Ensure padding and border are included in the width
+    >
+      <Typography>{item.name}</Typography>
+      <Box display="flex" alignItems="center" flexGrow={1} justifyContent="center">
+        <Typography>Quantity: {item.quantity}</Typography>
+      </Box>
+      <Button
+        onClick={() => handleRemoveItem(item.name)}
+        sx={{
+          backgroundColor: '#708871',
+          color: 'whitesmoke',
+          whiteSpace: 'nowrap', // Prevent text wrapping
+        }}
+      >
+        Remove
+      </Button>
+    </Box>
+  ))}
+</Stack>
+
       </Box>
     </>
   );
