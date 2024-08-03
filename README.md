@@ -40,6 +40,10 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - **Material UI**: For the design and user interface components.
 - **Teachable Machine**: For facilitating easy model training and integration.
 - **Kaggle**: For the database collection used in model training.
+- **Canva**: For images.
+- **Unsplash**: For images.
+
+
 
 
 
