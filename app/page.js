@@ -172,28 +172,28 @@ export default function Home() {
     <>
       <Box
   sx={{
-    ...greenStyle,  // Include any other styles from greenStyle
-    backgroundImage: 'url(./2-background.png)', // Path to your background image
-    backgroundSize: 'cover', // Ensure the image covers the entire area
-    backgroundPosition: 'center', // Center the background image
-    backgroundRepeat: 'no-repeat', // Prevent the image from repeating
-    position: 'relative', // Ensure that the nested Box is positioned relative to this
-    height: '100vh', // Full viewport height to cover the entire background
+    ...greenStyle,  
+    backgroundImage: 'url(./2-background.png)', 
+    backgroundSize: 'cover', 
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat', 
+    position: 'relative', 
+    height: '100vh', 
   }}
 >
   <Box
     sx={{
       textAlign: 'center',
       padding: 2,
-      position: 'absolute', // Position absolutely to cover the area
+      position: 'absolute', 
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-      backgroundColor: 'rgba(0, 0, 0, 0.3)', // semi-transparent background color
-      backdropFilter: 'blur(10px)', // Adjust the blur strength
-      borderRadius: '8px', // Optional: Add rounded corners for a smoother look
-      maxWidth: '900px', // Max width for the content
-      width: '100%', // Ensure the Box takes full width available
+      backgroundColor: 'rgba(0, 0, 0, 0.3)', 
+      backdropFilter: 'blur(10px)', 
+      borderRadius: '8px', 
+      maxWidth: '900px', 
+      width: '100%', 
     }}
   >
     <Typography variant="h3" color="#E1D8C9" gutterBottom>
@@ -213,10 +213,10 @@ export default function Home() {
     marginBottom: 2,
     backgroundColor: '#708871',
     '&:hover': {
-      backgroundColor: '#5a6d58', // Change to your preferred color on hover
+      backgroundColor: '#5a6d58', 
     },
     '&:focus': {
-      outline: 'none', // Remove focus outline if needed
+      outline: 'none', 
     },
   }}>
           ADD ITEM
@@ -227,10 +227,10 @@ export default function Home() {
     marginBottom: 2,
     backgroundColor: '#708871',
     '&:hover': {
-      backgroundColor: '#5a6d58', // Change to your preferred color on hover
+      backgroundColor: '#5a6d58', 
     },
     '&:focus': {
-      outline: 'none', // Remove focus outline if needed
+      outline: 'none', 
     },
   }} color="secondary">Capture Image</Button>
         </Link>
@@ -270,9 +270,7 @@ export default function Home() {
               onChange={(e) => setItemQuantity(parseInt(e.target.value))}
               fullWidth
             />
-            {/* <Button sx={{backgroundColor: '#708871'}}variant="contained" onClick={handleAddItem}>
-              ADD
-            </Button> */}
+         
             <Button
   variant="contained"
   onClick={handleAddItem}
@@ -281,10 +279,10 @@ export default function Home() {
     marginBottom: 2,
     backgroundColor: '#708871',
     '&:hover': {
-      backgroundColor: '#5a6d58', // Change to your preferred color on hover
+      backgroundColor: '#5a6d58', 
     },
     '&:focus': {
-      outline: 'none', // Remove focus outline if needed
+      outline: 'none', 
     },
   }}
 >
@@ -311,10 +309,10 @@ export default function Home() {
     
     backgroundColor: '#708871',
     '&:hover': {
-      backgroundColor: '#5a6d58', // Change to your preferred color on hover
+      backgroundColor: '#5a6d58', 
     },
     '&:focus': {
-      outline: 'none', // Remove focus outline if needed
+      outline: 'none', 
     },
   }}>
               SEARCH
@@ -331,10 +329,10 @@ export default function Home() {
   borderRadius={2}
   sx={{ overflowX: 'hidden' }}
   style={{
-    scrollbarWidth: 'none', /* For Firefox */
-    msOverflowStyle: 'none', /* For Internet Explorer and Edge */
+    scrollbarWidth: 'none', 
+    msOverflowStyle: 'none', 
     '&::-webkit-scrollbar': {
-      display: 'none' /* For Chrome, Safari, and Opera */
+      display: 'none' 
     }
   }}
 >
@@ -348,7 +346,7 @@ export default function Home() {
       bgcolor="#E8DFCA"
       padding={1}
       borderRadius={1}
-      boxSizing="border-box" // Ensure padding and border are included in the width
+      boxSizing="border-box" 
     >
       <Typography>{item.name}</Typography>
       <Box display="flex" alignItems="center" flexGrow={1} justifyContent="center">
@@ -359,7 +357,7 @@ export default function Home() {
         sx={{
           backgroundColor: '#708871',
           color: 'whitesmoke',
-          whiteSpace: 'nowrap', // Prevent text wrapping
+          whiteSpace: 'nowrap', 
         }}
       >
         Remove
