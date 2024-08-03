@@ -1,5 +1,6 @@
 # Pantry App
 
+
 ## Overview
 
 The Pantry App is a sophisticated web application designed to streamline pantry inventory management. By integrating Firebase for real-time data management and utilizing a Teachable Machine model for image classification, the app allows users to efficiently add items, track quantities, and simplify pantry management with a camera-based item identification system.
